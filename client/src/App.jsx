@@ -288,8 +288,8 @@ function ResultEntry({ data, onCancel, onSave }) {
   const set = (i, val) => setRows((rs) => rs.map((r, idx) => idx === i ? { ...r, result: val } : r));
   const allFilled = rows.length > 0 && rows.every((r) => r.result !== "");
   return (
-    <div style={S.overlay} onClick={onCancel}>
-      <div style={{ ...S.modal, width: 620 }} onClick={(e) => e.stopPropagation()}>
+    <div style={S.overlay} className="modal-overlay" onClick={onCancel}>
+      <div style={{ ...S.modal, width: 620 }} className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div style={S.modalHead}>
           <h3 style={{ fontFamily: "'Fraunces',serif", fontSize: 20 }}>Enter Results — {order.id}</h3>
           <button style={S.iconBtnSm} onClick={onCancel}><Trash2 size={16} style={{ opacity: 0 }} />✕</button>
@@ -305,7 +305,7 @@ function ResultEntry({ data, onCancel, onSave }) {
             }, {})).map(([testName, group]) => (
               <div key={testName} style={{ marginBottom: 18 }}>
                 <div style={{ fontWeight: 600, fontSize: 15, fontFamily: "'Fraunces',serif", margin: "6px 0 8px", color: "var(--accent)" }}>{testName}</div>
-                <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 0.8fr 1.2fr 0.7fr", gap: 8, fontSize: 11, color: "var(--muted)", textTransform: "uppercase", padding: "0 0 8px", borderBottom: "1px solid var(--border)" }}>
+                <div className="result-head" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 0.8fr 1.2fr 0.7fr", gap: 8, fontSize: 11, color: "var(--muted)", textTransform: "uppercase", padding: "0 0 8px", borderBottom: "1px solid var(--border)" }}>
                   <div>Parameter</div><div>Result</div><div>Unit</div><div>Range</div><div>Flag</div>
                 </div>
                 {group.map((r) => {
@@ -315,7 +315,7 @@ function ResultEntry({ data, onCancel, onSave }) {
                   const flag = r.result === "" ? "" : high ? "HIGH" : low ? "LOW" : "Normal";
                   const fc = high ? "#f87171" : low ? "#f59e0b" : "#2dd4bf";
                   return (
-                    <div key={i} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 0.8fr 1.2fr 0.7fr", gap: 8, alignItems: "center", padding: "10px 0", borderBottom: "1px solid var(--border)" }}>
+                    <div key={i} className="resp-row" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 0.8fr 1.2fr 0.7fr", gap: 8, alignItems: "center", padding: "10px 0", borderBottom: "1px solid var(--border)" }}>
                       <div>
                         <div style={{ fontSize: 14, fontWeight: 500 }}>{r.name}</div>
                         {r.method && <div style={{ fontSize: 11, color: "var(--muted)", fontStyle: "italic" }}>Method: {r.method}</div>}
@@ -544,8 +544,8 @@ function WorkQueue({ orders, patients, advance, onNew, onReport }) {
 
 function HistoryModal({ patient, orders, onClose }) {
   return (
-    <div style={S.overlay} onClick={onClose}>
-      <div style={S.modal} onClick={(e) => e.stopPropagation()}>
+    <div style={S.overlay} className="modal-overlay" onClick={onClose}>
+      <div style={S.modal} className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div style={S.modalHead}>
           <div>
             <h3 style={{ fontFamily: "'Fraunces',serif", fontSize: 20 }}>{patient.name}</h3>
@@ -649,7 +649,7 @@ function NewRegistration({ onDone, lookup, tests, doctors, goQueue }) {
             </div>
             {matched && <div style={S.matchNote}><CheckCircle2 size={14} /> Returning patient found — details loaded. New order will link to existing record.</div>}
           </Field>
-          <div style={{ ...S.formGrid, marginTop: 14 }}>
+          <div style={{ ...S.formGrid, marginTop: 14 }} className="form-grid">
             <Field label="Full name" full>
               <input style={S.input} value={patient.name} onChange={(e) => setPatient({ ...patient, name: e.target.value })} />
             </Field>
@@ -1044,8 +1044,8 @@ function ParamManager({ test, onClose }) {
   };
 
   return (
-    <div style={S.overlay} onClick={onClose}>
-      <div style={{ ...S.modal, width: 680 }} onClick={(e) => e.stopPropagation()}>
+    <div style={S.overlay} className="modal-overlay" onClick={onClose}>
+      <div style={{ ...S.modal, width: 680 }} className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div style={S.modalHead}>
           <div>
             <h3 style={{ fontFamily: "'Fraunces',serif", fontSize: 20 }}>Parameters — {test.name}</h3>
@@ -1057,7 +1057,7 @@ function ParamManager({ test, onClose }) {
         {err && <div style={S.dueNote}>{err}</div>}
 
         <div style={{ background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 12, padding: 14, marginTop: 16 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1.3fr 0.9fr 0.8fr 0.8fr auto", gap: 8, alignItems: "end" }}>
+          <div className="resp-row" style={{ display: "grid", gridTemplateColumns: "2fr 1.3fr 0.9fr 0.8fr 0.8fr auto", gap: 8, alignItems: "end" }}>
             <Field label="Parameter name"><input style={S.input} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Fasting Plasma Glucose" /></Field>
             <Field label="Method"><input style={S.input} value={form.method} onChange={(e) => setForm({ ...form, method: e.target.value })} placeholder="Hexokinase" /></Field>
             <Field label="Unit"><input style={S.input} value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} placeholder="mg/dl" /></Field>
@@ -1098,13 +1098,13 @@ function TestEditor({ test, onSave, onClose }) {
   const [t, setT] = useState(test);
   const isNew = !!test._new;
   return (
-    <div style={S.overlay} onClick={onClose}>
-      <div style={S.modal} onClick={(e) => e.stopPropagation()}>
+    <div style={S.overlay} className="modal-overlay" onClick={onClose}>
+      <div style={S.modal} className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div style={S.modalHead}>
           <h3 style={{ fontFamily: "'Fraunces',serif", fontSize: 20 }}>{isNew ? "Add Test" : "Edit Test"}</h3>
           <button style={S.iconBtnSm} onClick={onClose}><X size={16} /></button>
         </div>
-        <div style={{ ...S.formGrid, marginTop: 16 }}>
+        <div style={{ ...S.formGrid, marginTop: 16 }} className="form-grid">
           <Field label="ID (short code)"><input style={{ ...S.input, opacity: isNew ? 1 : 0.5 }} disabled={!isNew} value={t.id} onChange={(e) => setT({ ...t, id: e.target.value.toLowerCase().replace(/\s/g, "") })} placeholder="cbc" /></Field>
           <Field label="Price (₹)"><input type="number" style={S.input} value={t.price} onChange={(e) => setT({ ...t, price: parseInt(e.target.value) || 0 })} /></Field>
           <Field label="Name" full><input style={S.input} value={t.name} onChange={(e) => setT({ ...t, name: e.target.value })} /></Field>
@@ -1159,7 +1159,7 @@ function ReferralDoctors() {
       {err && <div style={S.dueNote}>{err}</div>}
       <div style={S.panel}>
         <h3 style={{ fontFamily: "'Fraunces',serif", fontSize: 18, marginBottom: 14 }}>Add Doctor</h3>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr auto", gap: 12, alignItems: "end" }}>
+        <div className="resp-row" style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1.5fr auto", gap: 12, alignItems: "end" }}>
           <Field label="Name"><input style={S.input} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Dr. Patel" /></Field>
           <Field label="Specialty"><input style={S.input} value={form.specialty} onChange={(e) => setForm({ ...form, specialty: e.target.value })} placeholder="Pediatrics" /></Field>
           <Field label="Phone"><input style={S.input} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></Field>
@@ -1591,6 +1591,12 @@ input,select{font-family:inherit}
   .p-row{grid-template-columns:1fr 1fr !important;row-gap:4px}
   .queue-bar{flex-wrap:wrap}
   .app-main table{display:block;overflow-x:auto;white-space:nowrap}
+  .modal-overlay{padding:10px !important}
+  .modal-overlay > div{width:100% !important;max-width:100% !important}
+  .modal-card{width:100% !important;padding:18px !important}
+  .resp-row{grid-template-columns:1fr !important}
+  .resp-row button{width:100% !important;justify-content:center}
+  .result-head{display:none !important}
 }
 @media (max-width:480px){
   .p-row{grid-template-columns:1fr !important}
