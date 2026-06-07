@@ -15,8 +15,11 @@ import {
 } from "recharts";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5244";
-let TOKEN = null;
-function setToken(t) { TOKEN = t; }
+let TOKEN = (() => { try { return localStorage.getItem("lab_token"); } catch { return null; } })();
+function setToken(t) {
+  TOKEN = t;
+  try { t ? localStorage.setItem("lab_token", t) : localStorage.removeItem("lab_token"); } catch {}
+}
 function api(path, opts = {}) {
   return fetch(`${API}${path}`, {
     ...opts,
@@ -66,7 +69,9 @@ const STATUS_FLOW = ["Registered", "Sample Collected", "In Lab", "Report Ready"]
 
 export default function App() {
   const [theme, setTheme] = useState("light");
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try { const u = localStorage.getItem("lab_user"); return u ? JSON.parse(u) : null; } catch { return null; }
+  });
   const [page, setPage] = useState("dashboard");
   const [navOpen, setNavOpen] = useState(false);
   const [patients, setPatients] = useState({});
@@ -128,7 +133,7 @@ export default function App() {
   useEffect(() => { if (user) loadAll(); }, [user]);
 
   // gate placed after all hooks (Rules of Hooks)
-  if (!user) return <><style>{CSS}</style><AuthGate onLogin={setUser} /></>;
+  if (!user) return <><style>{CSS}</style><AuthGate onLogin={(d) => { try { localStorage.setItem("lab_user", JSON.stringify(d)); } catch {} setUser(d); }} /></>;
 
   // create order via API (server handles patient dedup by phone)
   const registerOrder = async ({ patient, tests, total, payMode }) => {
@@ -247,7 +252,7 @@ export default function App() {
     <div style={S.shell} className="app-shell">
       <style>{CSS}</style>
       {navOpen && <div className="nav-overlay" onClick={() => setNavOpen(false)} />}
-      <Sidebar page={page} setPage={go} user={user} navOpen={navOpen} onLogout={() => setUser(null)} onAddStaff={() => go("addstaff")} />
+      <Sidebar page={page} setPage={go} user={user} navOpen={navOpen} onLogout={() => { setToken(null); try { localStorage.removeItem("lab_user"); } catch {} setUser(null); }} onAddStaff={() => go("addstaff")} />
       <div style={S.body} className="app-body">
         <TopBar theme={theme} toggle={toggle} page={page} search={search} setSearch={setSearch} setPage={setPage} user={user} onMenu={() => setNavOpen(true)} />
         {apiError && <div style={S.apiError}>{apiError}</div>}
