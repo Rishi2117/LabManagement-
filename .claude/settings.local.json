@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-NetTCPConnection -State Listen | Where-Object { $_.OwningProcess -in \\(Get-Process postgres -ErrorAction SilentlyContinue\\).Id } | Select-Object LocalAddress, LocalPort, OwningProcess | Format-Table -AutoSize)",
+      "PowerShell(Restart-Service postgresql-x64-18 -Force; Start-Sleep -Seconds 2; Get-NetTCPConnection -State Listen | Where-Object { $_.OwningProcess -in \\(Get-Process postgres -ErrorAction SilentlyContinue\\).Id } | Select-Object LocalAddress, LocalPort | Format-Table -AutoSize)",
+      "PowerShell(Get-Service postgresql-x64-18 | Format-Table Name, Status, StartType -AutoSize; Get-NetTCPConnection -State Listen | Where-Object { $_.OwningProcess -in \\(Get-Process postgres -ErrorAction SilentlyContinue\\).Id } | Select-Object LocalAddress, LocalPort | Format-Table -AutoSize)",
+      "PowerShell(Start-Process powershell -Verb RunAs -ArgumentList \"-NoProfile\",\"-Command\",\"Restart-Service postgresql-x64-18 -Force; Start-Sleep -Seconds 3; Write-Host 'Service restarted'; Start-Sleep -Seconds 2\" -Wait; Start-Sleep -Seconds 2; Get-NetTCPConnection -State Listen | Where-Object { $_.OwningProcess -in \\(Get-Process postgres -ErrorAction SilentlyContinue\\).Id } | Select-Object LocalAddress, LocalPort | Format-Table -AutoSize)",
+      "PowerShell($exe = Get-ChildItem \"C:\\\\Program Files\\\\pgAdmin 4\\\\\" -Recurse -Filter \"pgAdmin4.exe\" -ErrorAction SilentlyContinue | Select-Object -First 1; if \\($exe\\) { Start-Process $exe.FullName; \"Launched: $\\($exe.FullName\\)\" } else { \"pgAdmin4.exe not found under C:\\\\Program Files\\\\pgAdmin 4\\\\\" })"
+    ]
+  }
+}
