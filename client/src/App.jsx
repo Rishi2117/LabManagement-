@@ -520,7 +520,7 @@ function WorkQueue({ orders, patients, advance, onNew, onReport }) {
                 <td style={S.td}>₹{o.total}</td>
                 <td style={{ ...S.td, color: "var(--muted)" }}>{o.ref || "—"}</td>
                 <td style={{ ...S.td, textAlign: "right", whiteSpace: "nowrap" }}>
-                  <button style={S.linkBtn} onClick={() => setHistoryPhone(o.phone)} title="Patient history"><History size={15} /></button>
+                  <button style={S.linkBtn} onClick={() => setHistoryPhone(o.phone)} title="Patient history" className="link-btn"><History size={15} /></button>
                   <button style={{ ...S.btnSm, marginRight: 8 }} onClick={() => onReport(o)}>
                     <FileOutput size={13} /> Report
                   </button>
@@ -684,7 +684,7 @@ function NewRegistration({ onDone, lookup, tests, doctors, goQueue }) {
             {tests.map((t) => {
               const on = !!cart[t.id];
               return (
-                <div key={t.id} style={{ ...S.testCard, ...(on ? S.testCardOn : {}) }}>
+                <div key={t.id} style={{ ...S.testCard, ...(on ? S.testCardOn : {}) }} className="test-card">
                   <div style={S.catTag}>{t.cat}</div>
                   <div style={S.testName}>{t.name}</div>
                   <div style={S.metaRow}><Clock size={12} /> {t.tat}</div>
@@ -833,7 +833,7 @@ function Dashboard({ orders, patients }) {
         {stats.map((st) => {
           const Icon = st.icon;
           return (
-            <div key={st.label} style={S.statCard}>
+            <div key={st.label} style={S.statCard} className="stat-card">
               <div style={{ ...S.statIcon, background: st.tint + "22", color: st.tint }}><Icon size={20} /></div>
               <div style={S.statVal}>{st.value}</div>
               <div style={S.statLabel}>{st.label}</div>
@@ -1238,9 +1238,9 @@ function PatientsView({ orders, patients, onReport }) {
           const isOpen = !!open[ph];
           const initials = (p.name || "?").split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
           return (
-            <div key={ph} style={S.pGroup}>
+            <div key={ph} style={S.pGroup} className="p-group">
               <button style={S.pHead} onClick={() => toggle(ph)}>
-                <ChevronRight size={16} style={{ color: "var(--muted)", transform: isOpen ? "rotate(90deg)" : "none", transition: "transform .15s", flexShrink: 0 }} />
+                <ChevronRight size={16} style={{ color: "var(--muted)", transform: isOpen ? "rotate(90deg)" : "none", transition: "transform 200ms cubic-bezier(0.34,1.56,0.64,1)", flexShrink: 0 }} />
                 <div style={S.pAvatar}>{initials}</div>
                 <div style={{ textAlign: "left" }}>
                   <div style={{ fontWeight: 600, fontSize: 14 }}>{p.name}</div>
@@ -1568,24 +1568,158 @@ function RevenueView({ orders, patients }) {
 // --- STYLES -----------------------------------------------------------------
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Outfit:wght@300;400;500;600;700&display=swap');
-:root,[data-theme="dark"]{--bg:#0d1117;--panel:#161b22;--card:#1c232d;--ink:#e8edf2;--muted:#8b97a5;--accent:#2dd4bf;--accent2:#0ea5a3;--border:#2a323d;--sidebar:#11161d;}
-[data-theme="light"]{--bg:#f4f6fb;--panel:#ffffff;--card:#ffffff;--ink:#1a2230;--muted:#64748b;--accent:#0ea5a3;--accent2:#0d9488;--border:#e6ebf2;--sidebar:#ffffff;}
+
+:root,[data-theme="dark"]{
+  --bg:#0d1117;
+  --panel:#161b22;
+  --card:#1c232d;
+  --ink:#e8edf2;
+  --muted:#8b97a5;
+  --accent:#2dd4bf;
+  --accent2:#0ea5a3;
+  --border:#2a323d;
+  --sidebar:#11161d;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.25),0 1px 2px rgba(0,0,0,.15);
+  --shadow-md:0 4px 16px rgba(0,0,0,.35),0 2px 6px rgba(0,0,0,.2);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.45),0 4px 12px rgba(0,0,0,.25);
+}
+[data-theme="light"]{
+  --bg:#f4f6fb;
+  --panel:#ffffff;
+  --card:#f8fafc;
+  --ink:#1a2230;
+  --muted:#64748b;
+  --accent:#0ea5a3;
+  --accent2:#0d9488;
+  --border:#e6ebf2;
+  --sidebar:#ffffff;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,.09),0 2px 6px rgba(0,0,0,.05);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.12),0 4px 12px rgba(0,0,0,.06);
+}
+
 *{box-sizing:border-box;font-family:'Outfit',sans-serif;margin:0}
 body{margin:0}
-button{cursor:pointer;border:none;font-family:inherit;transition:all .15s ease}
-button:active{transform:scale(0.98)}
-tbody tr{transition:background .12s ease}
+
+/* ── Buttons: Emil's 0.97 press scale + smooth shadow lift on hover ── */
+button{
+  cursor:pointer;border:none;font-family:inherit;
+  transition:transform 150ms ease, box-shadow 150ms ease, background 150ms ease, color 150ms ease, border-color 150ms ease, opacity 150ms ease;
+  -webkit-tap-highlight-color:transparent;
+}
+button:active{transform:scale(0.97) !important}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px;}
+
+/* Primary action buttons: lift slightly on hover */
+.btn-primary:hover{box-shadow:0 4px 14px rgba(45,212,191,.35);transform:translateY(-1px)}
+.btn-primary:active{transform:scale(0.97) translateY(0) !important;box-shadow:none}
+
+/* Nav items: smooth background transition */
+.nav-item{transition:background 120ms ease,color 120ms ease,transform 120ms ease}
+.nav-item:hover{background:var(--card) !important}
+.nav-item:active{transform:scale(0.98)}
+
+/* Table rows: subtler, faster hover */
+tbody tr{transition:background 100ms ease}
 tbody tr:hover{background:var(--card)}
-@keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes loadSlide{0%{left:-40%}100%{left:100%}}
-input,select{font-family:inherit}
-::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+/* Inputs: focus glow ring */
+input,select{
+  font-family:inherit;
+  transition:border-color 150ms ease,box-shadow 150ms ease;
+  outline:none;
+}
+input:focus,select:focus{
+  border-color:var(--accent) !important;
+  box-shadow:0 0 0 3px rgba(45,212,191,.15) !important;
+}
+
+/* Cards: hover lift for interactive cards */
+.stat-card{
+  transition:transform 200ms ease,box-shadow 200ms ease;
+}
+.stat-card:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-md);
+}
+
+/* Test cards: scale + border glow */
+.test-card{
+  transition:transform 180ms ease,box-shadow 180ms ease,border-color 150ms ease;
+}
+.test-card:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-sm);
+}
+
+/* Modal entrance */
+@keyframes modalIn{
+  from{opacity:0;transform:scale(0.96) translateY(8px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+.modal-card{
+  animation:modalIn 180ms cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* Overlay fade in */
+@keyframes overlayIn{from{opacity:0}to{opacity:1}}
+.modal-overlay{animation:overlayIn 150ms ease}
+
+/* Toast slide-up */
+@keyframes slideIn{
+  from{opacity:0;transform:translateY(12px) scale(0.96)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* Loading bar */
+@keyframes loadSlide{0%{left:-40%}100%{left:110%}}
+
+/* Sidebar nav transition */
+@keyframes fadeSlideIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+.sub-nav{animation:fadeSlideIn 150ms ease}
+
+/* Link buttons: opacity on hover */
+.link-btn{
+  transition:opacity 120ms ease,background 120ms ease,color 120ms ease,transform 120ms ease;
+  opacity:0.7;
+}
+.link-btn:hover{opacity:1;transform:scale(1.05)}
+.link-btn:active{transform:scale(0.95)}
+
+/* Badge chips */
+.status-badge{transition:opacity 120ms ease}
+
+/* Ghost buttons */
+.btn-ghost:hover{background:var(--card) !important;border-color:var(--accent) !important}
+
+/* Search box focus */
+.search-box:focus-within{
+  border-color:var(--accent) !important;
+  box-shadow:0 0 0 3px rgba(45,212,191,.12) !important;
+}
+.search-box{transition:border-color 150ms ease,box-shadow 150ms ease}
+
+/* Patient group rows */
+.p-group{transition:box-shadow 150ms ease}
+.p-group:hover{box-shadow:var(--shadow-sm)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+
+/* Reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms !important;animation-duration:.01ms !important}
+}
+
 .menu-btn{display:none !important}
 .nav-overlay{display:none}
+
 @media (max-width:860px){
-  .app-sidebar{position:fixed !important;left:0;top:0;z-index:60;height:100vh !important;transform:translateX(-100%);transition:transform .22s ease;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+  .app-sidebar{position:fixed !important;left:0;top:0;z-index:60;height:100vh !important;transform:translateX(-100%);transition:transform .22s cubic-bezier(0.4,0,0.2,1);box-shadow:0 10px 40px rgba(0,0,0,.35)}
   .app-sidebar.open{transform:translateX(0)}
-  .nav-overlay{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:55}
+  .nav-overlay{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:55;animation:overlayIn 200ms ease}
   .menu-btn{display:grid !important}
   .app-topbar{padding:12px 14px !important;gap:10px !important;flex-wrap:wrap}
   .page-title{font-size:19px !important}
@@ -1610,107 +1744,153 @@ input,select{font-family:inherit}
 `;
 
 const S = {
+  // ── Shell & layout ──────────────────────────────────────────────────
   shell: { display: "flex", minHeight: "100vh", background: "var(--bg)", color: "var(--ink)" },
-  sidebar: { width: 230, background: "var(--sidebar)", borderRight: "1px solid var(--border)", padding: "22px 16px", display: "flex", flexDirection: "column", position: "sticky", top: 0, height: "100vh" },
-  brand: { display: "flex", gap: 12, alignItems: "center", padding: "0 6px 22px" },
-  logo: { width: 38, height: 38, borderRadius: 11, background: "linear-gradient(135deg,var(--accent),var(--accent2))", display: "grid", placeItems: "center", color: "#04201d" },
-  brandName: { fontFamily: "'Fraunces',serif", fontSize: 18, fontWeight: 600 },
-  brandSub: { fontSize: 10, color: "var(--muted)", letterSpacing: 1, textTransform: "uppercase" },
-  nav: { display: "flex", flexDirection: "column", gap: 4 },
-  navItem: { display: "flex", alignItems: "center", gap: 11, padding: "11px 13px", borderRadius: 10, background: "transparent", color: "var(--muted)", fontSize: 14, fontWeight: 500, textAlign: "left", width: "100%" },
-  navOn: { background: "var(--accent)", color: "#04201d", fontWeight: 600 },
-  toastWrap: { position: "fixed", bottom: 24, right: 24, display: "flex", flexDirection: "column", gap: 10, zIndex: 100 },
-  toast: { background: "var(--accent)", color: "#04201d", padding: "12px 18px", borderRadius: 12, fontWeight: 600, fontSize: 14, boxShadow: "0 8px 24px rgba(0,0,0,0.25)", animation: "slideIn .25s ease", minWidth: 200 },
+  sidebar: { width: 234, background: "var(--sidebar)", borderRight: "1px solid var(--border)", padding: "20px 14px", display: "flex", flexDirection: "column", position: "sticky", top: 0, height: "100vh", overflowY: "auto" },
+  brand: { display: "flex", gap: 11, alignItems: "center", padding: "0 6px 24px" },
+  // Logo: slightly larger gradient circle, softer shadow
+  logo: { width: 38, height: 38, borderRadius: 11, background: "linear-gradient(135deg,var(--accent),var(--accent2))", display: "grid", placeItems: "center", color: "#04201d", boxShadow: "0 2px 8px rgba(45,212,191,.3), inset 0 1px 0 rgba(255,255,255,.15)" },
+  brandName: { fontFamily: "'Fraunces',serif", fontSize: 17, fontWeight: 600, letterSpacing: "-0.01em" },
+  brandSub: { fontSize: 9, color: "var(--muted)", letterSpacing: "0.08em", textTransform: "uppercase", marginTop: 1 },
+  nav: { display: "flex", flexDirection: "column", gap: 2 },
+  // Nav items: slightly more padding, use nav-item class for hover transition
+  navItem: { display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 9, background: "transparent", color: "var(--muted)", fontSize: 13.5, fontWeight: 500, textAlign: "left", width: "100%" },
+  navOn: { background: "var(--accent)", color: "#04201d", fontWeight: 600, boxShadow: "0 2px 8px rgba(45,212,191,.25)" },
+
+  // ── Toast ───────────────────────────────────────────────────────────
+  toastWrap: { position: "fixed", bottom: 20, right: 20, display: "flex", flexDirection: "column", gap: 8, zIndex: 100 },
+  toast: { background: "var(--accent)", color: "#04201d", padding: "11px 16px", borderRadius: 10, fontWeight: 600, fontSize: 13.5, boxShadow: "0 8px 24px rgba(0,0,0,0.3), 0 2px 6px rgba(0,0,0,0.15)", animation: "slideIn 220ms cubic-bezier(0.34,1.56,0.64,1)", minWidth: 200, backdropFilter: "blur(8px)" },
   toastErr: { background: "#f87171", color: "#fff" },
-  loadingBar: { position: "relative", height: 3, background: "var(--border)", borderRadius: 3, overflow: "hidden", marginBottom: 18 },
-  loadingFill: { position: "absolute", top: 0, height: "100%", width: "40%", background: "var(--accent)", animation: "loadSlide 1s ease infinite", borderRadius: 3 },
+
+  // ── Loading bar ─────────────────────────────────────────────────────
+  loadingBar: { position: "relative", height: 2, background: "var(--border)", borderRadius: 2, overflow: "hidden", marginBottom: 20 },
+  loadingFill: { position: "absolute", top: 0, height: "100%", width: "40%", background: "var(--accent)", animation: "loadSlide 1.1s ease infinite", borderRadius: 2 },
+
+  // ── Auth ─────────────────────────────────────────────────────────────
   authWrap: { display: "grid", placeItems: "center", minHeight: "100vh", background: "var(--bg)", color: "var(--ink)", padding: 20 },
-  authCard: { background: "var(--panel)", border: "1px solid var(--border)", borderRadius: 18, padding: 32, width: "min(380px, 92vw)", textAlign: "center" },
-  authLogo: { width: 50, height: 50, borderRadius: 13, margin: "0 auto", background: "linear-gradient(135deg,var(--accent),var(--accent2))", display: "grid", placeItems: "center", color: "#04201d" },
-  authBrand: { fontFamily: "'Fraunces',serif", fontSize: 24, fontWeight: 600, marginTop: 12 },
-  authSub: { fontSize: 12, color: "var(--muted)", letterSpacing: 1, textTransform: "uppercase", marginTop: 4 },
-  pGroup: { border: "1px solid var(--border)", borderRadius: 14, background: "var(--panel)", overflow: "hidden" },
+  authCard: { background: "var(--panel)", border: "1px solid var(--border)", borderRadius: 20, padding: 36, width: "min(400px, 94vw)", textAlign: "center", boxShadow: "var(--shadow-md)" },
+  authLogo: { width: 52, height: 52, borderRadius: 14, margin: "0 auto", background: "linear-gradient(135deg,var(--accent),var(--accent2))", display: "grid", placeItems: "center", color: "#04201d", boxShadow: "0 4px 16px rgba(45,212,191,.3)" },
+  authBrand: { fontFamily: "'Fraunces',serif", fontSize: 24, fontWeight: 600, marginTop: 14, letterSpacing: "-0.02em" },
+  authSub: { fontSize: 11, color: "var(--muted)", letterSpacing: "0.07em", textTransform: "uppercase", marginTop: 4 },
+
+  // ── Patients ─────────────────────────────────────────────────────────
+  pGroup: { border: "1px solid var(--border)", borderRadius: 14, background: "var(--panel)", overflow: "hidden", transition: "box-shadow 150ms ease" },
   pHead: { display: "flex", alignItems: "center", gap: 11, padding: "13px 16px", width: "100%", background: "transparent", border: "none", cursor: "pointer", color: "var(--ink)" },
   pAvatar: { width: 34, height: 34, borderRadius: "50%", background: "var(--accent)", color: "#04201d", display: "grid", placeItems: "center", fontWeight: 600, fontSize: 13, flexShrink: 0 },
-  pRow: { display: "grid", gridTemplateColumns: "1fr 1.1fr 2fr 0.8fr 1.2fr 1fr", gap: 10, alignItems: "center", padding: "11px 16px 11px 40px", borderTop: "1px solid var(--border)" },
-  subNav: { display: "flex", flexDirection: "column", gap: 2, marginLeft: 14, paddingLeft: 12, borderLeft: "1px solid var(--border)", marginTop: 2 },
-  subItem: { display: "flex", alignItems: "center", gap: 9, padding: "9px 11px", borderRadius: 8, background: "transparent", color: "var(--muted)", fontSize: 13, fontWeight: 500, textAlign: "left", width: "100%" },
-  subItemOn: { background: "var(--bg)", color: "var(--accent)", fontWeight: 600 },
-  body: { flex: 1, display: "flex", flexDirection: "column", minWidth: 0 },
-  topbar: { display: "flex", alignItems: "center", gap: 18, padding: "16px 26px", borderBottom: "1px solid var(--border)", background: "var(--panel)" },
-  pageTitle: { fontFamily: "'Fraunces',serif", fontSize: 24, fontWeight: 600, whiteSpace: "nowrap" },
-  searchBox: { flex: 1, maxWidth: 420, display: "flex", alignItems: "center", gap: 8, background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 11, padding: "9px 14px" },
-  searchInput: { flex: 1, background: "transparent", border: "none", color: "var(--ink)", fontSize: 14, outline: "none" },
-  topRight: { display: "flex", alignItems: "center", gap: 12, marginLeft: "auto" },
-  iconBtn: { position: "relative", width: 38, height: 38, borderRadius: 10, background: "var(--bg)", border: "1px solid var(--border)", color: "var(--ink)", display: "grid", placeItems: "center" },
-  iconBtnSm: { width: 32, height: 32, borderRadius: 8, background: "var(--bg)", border: "1px solid var(--border)", color: "var(--ink)", display: "grid", placeItems: "center" },
-  badge: { position: "absolute", top: -4, right: -4, background: "#f87171", color: "#fff", fontSize: 10, fontWeight: 700, width: 17, height: 17, borderRadius: "50%", display: "grid", placeItems: "center" },
-  profile: { display: "flex", alignItems: "center", gap: 9, paddingLeft: 6 },
-  avatar: { width: 36, height: 36, borderRadius: "50%", background: "var(--accent)", color: "#04201d", display: "grid", placeItems: "center" },
-  main: { padding: 26, overflowY: "auto" },
-  apiError: { background: "#3a1212", border: "1px solid #f8717155", color: "#f87171", padding: "10px 26px", fontSize: 13 },
+  pRow: { display: "grid", gridTemplateColumns: "1fr 1.1fr 2fr 0.8fr 1.2fr 1fr", gap: 10, alignItems: "center", padding: "10px 16px 10px 40px", borderTop: "1px solid var(--border)" },
 
-  dashGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 },
-  statRow: { gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16 },
-  statCard: { background: "var(--panel)", border: "1px solid var(--border)", borderRadius: 16, padding: 18 },
-  statIcon: { width: 46, height: 46, borderRadius: 12, display: "grid", placeItems: "center", marginBottom: 14 },
-  statVal: { fontFamily: "'Fraunces',serif", fontSize: 26, fontWeight: 600 },
-  statLabel: { fontSize: 13, color: "var(--muted)", marginTop: 2 },
+  // ── Sub-nav ──────────────────────────────────────────────────────────
+  subNav: { display: "flex", flexDirection: "column", gap: 1, marginLeft: 14, paddingLeft: 12, borderLeft: "1px solid var(--border)", marginTop: 2 },
+  subItem: { display: "flex", alignItems: "center", gap: 9, padding: "8px 10px", borderRadius: 8, background: "transparent", color: "var(--muted)", fontSize: 13, fontWeight: 500, textAlign: "left", width: "100%" },
+  subItemOn: { background: "color-mix(in srgb, var(--accent) 12%, transparent)", color: "var(--accent)", fontWeight: 600 },
+
+  // ── Body / topbar ─────────────────────────────────────────────────────
+  body: { flex: 1, display: "flex", flexDirection: "column", minWidth: 0 },
+  topbar: { display: "flex", alignItems: "center", gap: 16, padding: "14px 24px", borderBottom: "1px solid var(--border)", background: "var(--panel)", position: "sticky", top: 0, zIndex: 40 },
+  pageTitle: { fontFamily: "'Fraunces',serif", fontSize: 22, fontWeight: 600, whiteSpace: "nowrap", letterSpacing: "-0.02em" },
+  searchBox: { flex: 1, maxWidth: 420, display: "flex", alignItems: "center", gap: 8, background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 10, padding: "8px 13px", transition: "border-color 150ms ease, box-shadow 150ms ease" },
+  searchInput: { flex: 1, background: "transparent", border: "none", color: "var(--ink)", fontSize: 13.5, outline: "none" },
+  topRight: { display: "flex", alignItems: "center", gap: 10, marginLeft: "auto" },
+  // Icon buttons: subtle shadow, slightly larger hit area
+  iconBtn: { position: "relative", width: 36, height: 36, borderRadius: 9, background: "var(--bg)", border: "1px solid var(--border)", color: "var(--muted)", display: "grid", placeItems: "center", transition: "color 120ms ease, border-color 120ms ease, background 120ms ease" },
+  iconBtnSm: { width: 30, height: 30, borderRadius: 8, background: "var(--bg)", border: "1px solid var(--border)", color: "var(--muted)", display: "grid", placeItems: "center" },
+  badge: { position: "absolute", top: -5, right: -5, background: "#f87171", color: "#fff", fontSize: 9, fontWeight: 700, width: 16, height: 16, borderRadius: "50%", display: "grid", placeItems: "center", border: "2px solid var(--panel)" },
+  profile: { display: "flex", alignItems: "center", gap: 9, paddingLeft: 8, borderLeft: "1px solid var(--border)", marginLeft: 2 },
+  avatar: { width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg,var(--accent),var(--accent2))", color: "#04201d", display: "grid", placeItems: "center", fontWeight: 600, fontSize: 13 },
+  main: { padding: 24, overflowY: "auto", flex: 1 },
+  apiError: { background: "rgba(248,113,113,.08)", border: "1px solid rgba(248,113,113,.25)", color: "#f87171", padding: "10px 24px", fontSize: 13 },
+
+  // ── Dashboard grid ────────────────────────────────────────────────────
+  dashGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 },
+  statRow: { gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14 },
+  // stat-card class handles the hover lift
+  statCard: { background: "var(--panel)", border: "1px solid var(--border)", borderRadius: 16, padding: 18, cursor: "default" },
+  statIcon: { width: 44, height: 44, borderRadius: 12, display: "grid", placeItems: "center", marginBottom: 14 },
+  statVal: { fontFamily: "'Fraunces',serif", fontSize: 28, fontWeight: 600, letterSpacing: "-0.02em" },
+  statLabel: { fontSize: 12.5, color: "var(--muted)", marginTop: 3 },
   statSub: { fontSize: 12, color: "var(--accent)", marginTop: 8, fontWeight: 500 },
+
+  // ── Panels & tables ───────────────────────────────────────────────────
   panel: { background: "var(--panel)", border: "1px solid var(--border)", borderRadius: 16, padding: 18 },
-  panelHead: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 },
-  panelTitle: { fontSize: 16, fontWeight: 600 },
+  panelHead: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 },
+  panelTitle: { fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em" },
   deptLegend: { display: "flex", flexDirection: "column", gap: 9, marginTop: 10 },
   deptItem: { display: "flex", alignItems: "center", gap: 9, fontSize: 13 },
   deptDot: { width: 10, height: 10, borderRadius: 3 },
   table: { width: "100%", borderCollapse: "collapse" },
-  th: { textAlign: "left", fontSize: 12, color: "var(--muted)", fontWeight: 500, padding: "10px 8px", borderBottom: "1px solid var(--border)", textTransform: "uppercase", letterSpacing: 0.5 },
+  th: { textAlign: "left", fontSize: 11, color: "var(--muted)", fontWeight: 600, padding: "10px 8px", borderBottom: "1px solid var(--border)", textTransform: "uppercase", letterSpacing: "0.05em" },
   tr: { borderBottom: "1px solid var(--border)" },
-  td: { padding: "13px 8px", fontSize: 14 },
-  placeholder: { textAlign: "center", padding: "80px 0", display: "flex", flexDirection: "column", alignItems: "center" },
+  td: { padding: "12px 8px", fontSize: 13.5 },
+  placeholder: { textAlign: "center", padding: "80px 0", display: "flex", flexDirection: "column", alignItems: "center", gap: 4 },
 
-  queueBar: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, gap: 12 },
-  linkBtn: { background: "transparent", border: "1px solid var(--border)", color: "var(--ink)", width: 30, height: 30, borderRadius: 8, display: "inline-grid", placeItems: "center", marginRight: 8, verticalAlign: "middle" },
+  // ── Queue bar ─────────────────────────────────────────────────────────
+  queueBar: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14, gap: 12 },
+  linkBtn: { background: "transparent", border: "1px solid var(--border)", color: "var(--ink)", width: 30, height: 30, borderRadius: 8, display: "inline-grid", placeItems: "center", marginRight: 6, verticalAlign: "middle" },
 
-  overlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "grid", placeItems: "center", padding: 20, zIndex: 50 },
-  modal: { background: "var(--panel)", border: "1px solid var(--border)", borderRadius: 18, padding: 24, width: 480, maxWidth: "100%", maxHeight: "85vh", overflowY: "auto" },
+  // ── Modals ────────────────────────────────────────────────────────────
+  overlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", display: "grid", placeItems: "center", padding: 20, zIndex: 50, backdropFilter: "blur(3px)" },
+  modal: { background: "var(--panel)", border: "1px solid var(--border)", borderRadius: 20, padding: 26, width: 480, maxWidth: "100%", maxHeight: "88vh", overflowY: "auto", boxShadow: "var(--shadow-lg)" },
   modalHead: { display: "flex", justifyContent: "space-between", alignItems: "flex-start" },
-  histCard: { background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 12, padding: 14 },
-  chip: { fontSize: 12, background: "var(--panel)", border: "1px solid var(--border)", borderRadius: 20, padding: "4px 10px" },
+  histCard: { background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 12, padding: 14, transition: "border-color 150ms ease" },
+  chip: { fontSize: 12, background: "var(--card)", border: "1px solid var(--border)", borderRadius: 20, padding: "3px 10px", display: "inline-block" },
 
+  // ── Registration ──────────────────────────────────────────────────────
   regWrap: { maxWidth: 760, margin: "0 auto" },
-  regStepper: { display: "flex", gap: 4, marginBottom: 22 },
+  regStepper: { display: "flex", gap: 4, marginBottom: 24 },
   regStepItem: { display: "flex", alignItems: "center", gap: 8, flex: 1 },
-  regDot: { width: 28, height: 28, borderRadius: "50%", background: "var(--panel)", border: "1px solid var(--border)", display: "grid", placeItems: "center", fontSize: 13, color: "var(--muted)", flexShrink: 0 },
-  regDotOn: { background: "var(--accent)", color: "#04201d", border: "1px solid var(--accent)" },
-  regLine: { height: 2, flex: 1 },
+  regDot: { width: 28, height: 28, borderRadius: "50%", background: "var(--panel)", border: "1px solid var(--border)", display: "grid", placeItems: "center", fontSize: 12, color: "var(--muted)", flexShrink: 0, transition: "background 200ms ease, border-color 200ms ease, color 200ms ease" },
+  regDotOn: { background: "var(--accent)", color: "#04201d", border: "1px solid var(--accent)", boxShadow: "0 0 0 3px rgba(45,212,191,.2)" },
+  regLine: { height: 2, flex: 1, borderRadius: 2, transition: "background 300ms ease" },
   formGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 },
-  label: { fontSize: 12, color: "var(--muted)", display: "block", marginBottom: 6 },
-  input: { width: "100%", background: "var(--bg)", border: "1px solid var(--border)", color: "var(--ink)", padding: "11px 12px", borderRadius: 10, fontSize: 14 },
-  matchNote: { display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "var(--accent)", marginTop: 8 },
-  testGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(210px,1fr))", gap: 13 },
-  testCard: { background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 13, padding: 15 },
-  testCardOn: { borderColor: "var(--accent)", boxShadow: "0 0 0 1px var(--accent)" },
-  catTag: { fontSize: 10, color: "var(--accent)", textTransform: "uppercase", letterSpacing: 1, fontWeight: 600 },
-  testName: { fontSize: 14, fontWeight: 500, margin: "6px 0 8px", lineHeight: 1.3 },
+  label: { fontSize: 11.5, color: "var(--muted)", display: "block", marginBottom: 5, fontWeight: 500, letterSpacing: "0.02em", textTransform: "uppercase" },
+  input: { width: "100%", background: "var(--bg)", border: "1px solid var(--border)", color: "var(--ink)", padding: "10px 12px", borderRadius: 10, fontSize: 14, outline: "none" },
+  matchNote: { display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, color: "var(--accent)", marginTop: 8, fontWeight: 500 },
+
+  // ── Test cards ────────────────────────────────────────────────────────
+  testGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(210px,1fr))", gap: 12 },
+  testCard: { background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 13, padding: 14, transition: "transform 180ms ease, box-shadow 180ms ease, border-color 150ms ease", cursor: "default" },
+  testCardOn: { borderColor: "var(--accent)", boxShadow: "0 0 0 1px var(--accent), 0 4px 12px rgba(45,212,191,.15)" },
+  catTag: { fontSize: 10, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700 },
+  testName: { fontSize: 14, fontWeight: 500, margin: "6px 0 8px", lineHeight: 1.35 },
   metaRow: { fontSize: 12, color: "var(--muted)", display: "flex", alignItems: "center", gap: 4 },
-  testFoot: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 13 },
-  price: { fontFamily: "'Fraunces',serif", fontSize: 17, fontWeight: 600 },
+  testFoot: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 14 },
+  price: { fontFamily: "'Fraunces',serif", fontSize: 18, fontWeight: 600 },
+
+  // ── Payment / collection ──────────────────────────────────────────────
   summary: { background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 13, padding: 16 },
   sumRow: { display: "flex", justifyContent: "space-between", padding: "8px 0", fontSize: 14, borderBottom: "1px solid var(--border)" },
   sumTotal: { borderBottom: "none", fontWeight: 600, fontSize: 16, paddingTop: 12 },
-  payRow: { display: "flex", gap: 10, margin: "10px 0", flexWrap: "wrap" },
-  payBtn: { flex: 1, minWidth: 110, background: "var(--bg)", border: "1px solid var(--border)", color: "var(--ink)", padding: "13px", borderRadius: 11, display: "flex", gap: 8, alignItems: "center", justifyContent: "center", fontSize: 14 },
-  payBtnOn: { borderColor: "var(--accent)", color: "var(--accent)" },
-  dueNote: { background: "#3a2a10", border: "1px solid #f59e0b55", color: "#f59e0b", padding: 12, borderRadius: 10, fontSize: 13, marginTop: 12 },
-  regNav: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 22 },
-  btn: { background: "var(--accent)", color: "#04201d", padding: "11px 18px", borderRadius: 10, fontWeight: 600, fontSize: 14, display: "inline-flex", alignItems: "center", gap: 8 },
-  btnSm: { background: "var(--accent)", color: "#04201d", padding: "7px 12px", borderRadius: 8, fontSize: 13, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 5, verticalAlign: "middle" },
-  btnGhost: { background: "transparent", color: "var(--ink)", padding: "9px 14px", borderRadius: 8, border: "1px solid var(--border)", fontSize: 13, display: "inline-flex", alignItems: "center", gap: 5 },
+  payRow: { display: "flex", gap: 10, margin: "12px 0", flexWrap: "wrap" },
+  payBtn: { flex: 1, minWidth: 110, background: "var(--bg)", border: "1px solid var(--border)", color: "var(--muted)", padding: "13px", borderRadius: 11, display: "flex", gap: 8, alignItems: "center", justifyContent: "center", fontSize: 14, transition: "border-color 150ms ease, color 150ms ease, box-shadow 150ms ease" },
+  payBtnOn: { borderColor: "var(--accent)", color: "var(--accent)", boxShadow: "0 0 0 1px var(--accent), 0 2px 8px rgba(45,212,191,.12)" },
+  dueNote: { background: "rgba(245,158,11,.08)", border: "1px solid rgba(245,158,11,.25)", color: "#f59e0b", padding: 12, borderRadius: 10, fontSize: 13, marginTop: 12 },
+  regNav: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 24 },
+
+  // ── Buttons ────────────────────────────────────────────────────────────
+  btn: { background: "var(--accent)", color: "#04201d", padding: "10px 18px", borderRadius: 10, fontWeight: 600, fontSize: 13.5, display: "inline-flex", alignItems: "center", gap: 7, className: "btn-primary" },
+  btnSm: { background: "var(--accent)", color: "#04201d", padding: "6px 11px", borderRadius: 8, fontSize: 12.5, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 5, verticalAlign: "middle" },
+  btnGhost: { background: "transparent", color: "var(--ink)", padding: "8px 14px", borderRadius: 8, border: "1px solid var(--border)", fontSize: 13, display: "inline-flex", alignItems: "center", gap: 5, transition: "background 120ms ease, border-color 120ms ease" },
 };
 
-const tooltipStyle = { background: "var(--card)", border: "1px solid var(--border)", borderRadius: 10, fontSize: 13, color: "var(--ink)" };
+const tooltipStyle = {
+  background: "var(--panel)",
+  border: "1px solid var(--border)",
+  borderRadius: 10,
+  fontSize: 12.5,
+  color: "var(--ink)",
+  boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
+};
 const badge = (s) => {
-  const map = { "Registered": "#8b97a5", "Sample Collected": "#f59e0b", "In Lab": "#3b82f6", "Report Ready": "#2dd4bf" };
-  return { fontSize: 12, fontWeight: 600, padding: "4px 11px", borderRadius: 20, color: "#04201d", background: map[s] || "#8b97a5", whiteSpace: "nowrap" };
+  const map = { "Registered": "#64748b", "Sample Collected": "#d97706", "In Lab": "#2563eb", "Report Ready": "#0d9488" };
+  const bg = map[s] || "#64748b";
+  return {
+    fontSize: 11.5,
+    fontWeight: 600,
+    padding: "3px 10px",
+    borderRadius: 20,
+    color: "#fff",
+    background: bg,
+    whiteSpace: "nowrap",
+    letterSpacing: "0.02em",
+  };
 };
